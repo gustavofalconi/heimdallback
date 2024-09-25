@@ -3,20 +3,25 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as fs from 'fs';
 import * as https from 'https';
+import express from 'express';
 
-async function bootstrap() {
-  // Carregar os certificados SSL
-  const httpsOptions = {
-    key: fs.readFileSync('/home/back/cert/server.key'),
-    cert: fs.readFileSync('/home/back/cert/server.cert'),
-  };
+const app = express();
 
-  // Criar a aplicação Nest com HTTPS
-  const app = await NestFactory.create(AppModule, {
-    httpsOptions,
-  });
+// Carregar os certificados de um diretório específico
+const options = {
+  key: fs.readFileSync('/caminho/para/seu/diretorio/server.key'),
+  cert: fs.readFileSync('/caminho/para/seu/diretorio/server.cert')
+};
 
-  app.enableCors();
+// Configurar uma rota simples
+app.get('/', (req, res) => {
+  res.send('Hello HTTPS!');
+});
+
+// Iniciar o servidor HTTPS
+https.createServer(options, app).listen(3000, () => {
+  console.log('Servidor HTTPS rodando na porta 3000');
+});
 
   const config = new DocumentBuilder()
     .setTitle('Documentação com Swagger - Asgard')
