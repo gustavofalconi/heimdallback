@@ -9,8 +9,8 @@ const app = express();
 
 // Carregar os certificados de um diretório específico
 const options = {
-  key: fs.readFileSync('/caminho/para/seu/diretorio/server.key'),
-  cert: fs.readFileSync('/caminho/para/seu/diretorio/server.cert')
+  key: fs.readFileSync('/home/back/cert/server.key'),
+  cert: fs.readFileSync('/home/back/cert/server.cert')
 };
 
 // Configurar uma rota simples
