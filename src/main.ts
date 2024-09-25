@@ -5,10 +5,10 @@ import * as fs from 'fs';
 import * as https from 'https';
 
 async function bootstrap() {
-  // Carregar os certificados de um diretório específico
+  // Carregar os certificados do Let's Encrypt
   const httpsOptions = {
-    key: fs.readFileSync('/home/back/cert/server.key'),
-    cert: fs.readFileSync('/home/back/cert/server.cert'),
+    key: fs.readFileSync('/etc/letsencrypt/live/heimdallback.eastus2.cloudapp.azure.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/heimdallback.eastus2.cloudapp.azure.com/fullchain.pem'),
   };
 
   // Criar o aplicativo NestJS com HTTPS
