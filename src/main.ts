@@ -3,26 +3,20 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as fs from 'fs';
 import * as https from 'https';
-import express from 'express';
 
-const app = express();
+async function bootstrap() {
+  // Carregar os certificados de um diretório específico
+  const httpsOptions = {
+    key: fs.readFileSync('/home/back/cert/server.key'),
+    cert: fs.readFileSync('/home/back/cert/server.cert'),
+  };
 
-// Carregar os certificados de um diretório específico
-const options = {
-  key: fs.readFileSync('/home/back/cert/server.key'),
-  cert: fs.readFileSync('/home/back/cert/server.cert')
-};
+  // Criar o aplicativo NestJS com HTTPS
+  const app = await NestFactory.create(AppModule, {
+    httpsOptions,
+  });
 
-// Configurar uma rota simples
-app.get('/', (req, res) => {
-  res.send('Hello HTTPS!');
-});
-
-// Iniciar o servidor HTTPS
-https.createServer(options, app).listen(3000, () => {
-  console.log('Servidor HTTPS rodando na porta 3000');
-});
-
+  // Configurar o Swagger
   const config = new DocumentBuilder()
     .setTitle('Documentação com Swagger - Asgard')
     .setDescription(
@@ -42,6 +36,10 @@ https.createServer(options, app).listen(3000, () => {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(443); // Porta 443 para HTTPS
+  // Iniciar o servidor HTTPS na porta 443
+  await app.listen(443, () => {
+    console.log('Servidor HTTPS rodando na porta 443');
+  });
 }
+
 bootstrap();
