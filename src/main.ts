@@ -16,6 +16,8 @@ async function bootstrap() {
     httpsOptions,
   });
 
+  app.enableCors(); // Habilita o CORS
+
   // Configurar o Swagger
   const config = new DocumentBuilder()
     .setTitle('Documentação com Swagger - Asgard')
