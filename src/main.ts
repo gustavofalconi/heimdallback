@@ -1,9 +1,21 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as fs from 'fs';
+import * as https from 'https';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // Carregar os certificados SSL
+  const httpsOptions = {
+    key: fs.readFileSync('/home/back/cert/server.key'),
+    cert: fs.readFileSync('/home/back/cert/server.cert'),
+  };
+
+  // Criar a aplicação Nest com HTTPS
+  const app = await NestFactory.create(AppModule, {
+    httpsOptions,
+  });
+
   app.enableCors();
 
   const config = new DocumentBuilder()
@@ -24,6 +36,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  await app.listen(3000);
+
+  await app.listen(443); // Porta 443 para HTTPS
 }
 bootstrap();
